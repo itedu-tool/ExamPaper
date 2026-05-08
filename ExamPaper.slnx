@@ -1,8 +1,26 @@
 ﻿<Solution>
-  <Project Path="src/ExamPaper.Service/ExamPaper.Service.csproj"/>
-  <Project Path="src/ExamPaper.Core/ExamPaper.Core.csproj"/>
-  <Project Path="src/ExamPaper.Infrastructure/ExamPaper.Infrastructure.csproj"/>
-  <Project Path="tests/ExamPaper.Api.IntegrationTests/ExamPaper.Api.IntegrationTests.csproj"/>
-  <Project Path="tests/ExamPaper.Tests/ExamPaper.Tests.csproj"/>
-  <Project Path="src/ExamPaper.Api/ExamPaper.Api.csproj"/>
+  <Folder Name="/git/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+  </Folder>
+  <Folder Name="/github/">
+    <File Path=".github/workflows/dotnet_docs.yml" />
+    <File Path=".github/workflows/dotnet_format.yml" />
+    <File Path=".github/workflows/dotnet_test.yml" />
+  </Folder>
+  <Folder Name="/others/">
+    <File Path=".editorconfig" />
+    <File Path="data.json" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/ExamPaper.Api/ExamPaper.Api.csproj" />
+    <Project Path="src/ExamPaper.Core/ExamPaper.Core.csproj" />
+    <Project Path="src/ExamPaper.Infrastructure/ExamPaper.Infrastructure.csproj" />
+    <Project Path="src/ExamPaper.Service/ExamPaper.Service.csproj" />
+  </Folder>
+  <Folder Name="/src/tests/">
+    <Project Path="tests/ExamPaper.Api.IntegrationTests/ExamPaper.Api.IntegrationTests.csproj" />
+    <Project Path="tests/ExamPaper.Tests/ExamPaper.Tests.csproj" />
+  </Folder>
 </Solution>

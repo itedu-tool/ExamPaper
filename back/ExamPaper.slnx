@@ -19,6 +19,7 @@
   </Folder>
   <Folder Name="/others/">
     <File Path=".editorconfig" />
+    <File Path=".yamllint.yml" />
     <File Path="data.json" />
     <File Path="Directory.Build.props" />
   </Folder>

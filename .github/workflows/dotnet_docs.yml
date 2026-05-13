@@ -1,3 +1,4 @@
+---
 name: dotnet docs
 on:
   workflow_run:

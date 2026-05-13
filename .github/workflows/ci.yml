@@ -13,6 +13,7 @@ permissions:
   pull-requests: write
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   SLN: back/ExamPaper.slnx
   TYPE_BUILD: Release
   VERBOSITY: normal
@@ -89,9 +90,9 @@ jobs:
       - name: Build
         run: dotnet build ${{ env.SLN }} --no-restore --configuration ${{ env.TYPE_BUILD }}
       - name: Test
-        run: dotnet test ${{ env.SLN }} --no-build --configuration ${{ env.TYPE_BUILD }} --verbosity ${{ env.VERBOSITY }}
+        run: dotnet test ${{ env.SLN }} --no-build --configuration ${{ env.TYPE_BUILD }} --verbosity ${{ env.VERBOSITY }} --logger trx
       - name: Upload test results (optional)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: test-results-${{ matrix.os }}

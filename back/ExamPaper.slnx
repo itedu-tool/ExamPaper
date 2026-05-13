@@ -14,10 +14,10 @@
   </Folder>
   <Folder Name="/github_actions/">
     <File Path="../.github/actions/setup-dotnet-env/action.yml" />
-    <File Path="../.github/workflows/dotnet_docs.yml" />
-    <File Path="../.github/workflows/dotnet_test.yml" />
+    <File Path="../.github/workflows/ci.yml" />
   </Folder>
   <Folder Name="/others/">
+    <File Path="../.markdownlint.json" />
     <File Path="../.yamllint.yml" />
     <File Path=".editorconfig" />
     <File Path="data.json" />

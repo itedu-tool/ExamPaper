@@ -1,0 +1,124 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  SLN: back/ExamPaper.slnx
+  TYPE_BUILD: Release
+  VERBOSITY: normal
+  BASE_PATH_DOCS: back/docs
+
+jobs:
+  dotnet-format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: format-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Setup environment
+        uses: ./.github/actions/setup-dotnet-env
+        with:
+          restore: 'true'
+      - name: Verify formatting
+        run: dotnet format $SLN --verify-no-changes --no-restore
+
+  lint-yaml:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: yamllint-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Lint YAML files
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: .github/workflows/ .yamllint.yml
+          config_file: .yamllint.yml
+
+  lint-markdown:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: markdownlint-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v17
+        with:
+          config: .markdownlint.json
+          globs: '**/*.md'
+
+  test:
+    needs: [dotnet-format, lint-yaml, lint-markdown]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    concurrency:
+      group: test-${{ github.ref }}
+      cancel-in-progress: true
+    strategy:
+      matrix:
+        os: ${{ fromJSON(github.event_name == 'pull_request' && '["ubuntu-latest", "windows-latest"]' || '["ubuntu-latest"]') }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Setup environment
+        uses: ./.github/actions/setup-dotnet-env
+        with:
+          restore: 'true'
+      - name: Build
+        run: dotnet build $SLN --no-restore --configuration $TYPE_BUILD
+      - name: Test
+        run: dotnet test $SLN --no-build --configuration $TYPE_BUILD --verbosity $VERBOSITY
+      - name: Upload test results (optional)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}
+          path: '**/TestResults/*.trx'
+
+  publish-docs:
+    needs: test
+    if: >
+      (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'))
+      || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: docs-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: ./.github/actions/setup-dotnet-env
+        with:
+          restore: 'false'
+      - name: Cache DocFX tool
+        uses: actions/cache@v5
+        with:
+          path: ~/.dotnet/tools
+          key: ${{ runner.os }}-docfx-${{ hashFiles('**/docfx.json') }}
+          restore-keys: ${{ runner.os }}-docfx-
+      - name: Install DocFX
+        run: dotnet tool update -g docfx
+      - name: Build Docs
+        run: docfx $BASE_PATH/docfx.json
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: $BASE_PATH/_site
+          destination_dir: ${{ github.ref == 'refs/heads/develop' && 'dev' || '' }}
+          keep_files: true

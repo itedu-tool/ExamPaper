@@ -3,11 +3,11 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [ main, develop ]
   pull_request:
-    branches: [main, develop]
+    branches: [ main, develop ]
   workflow_dispatch:
-    
+
 permissions:
   contents: read
   pull-requests: write
@@ -33,8 +33,8 @@ jobs:
         with:
           restore: 'true'
       - name: Verify formatting
-        run: dotnet format $SLN --verify-no-changes --no-restore
-        
+        run: dotnet format ${{ env.SLN }} --verify-no-changes --no-restore
+  
   lint-yaml:
     runs-on: ubuntu-latest
     concurrency:
@@ -70,7 +70,7 @@ jobs:
           markdownlint_flags: '**/*.md --config .markdownlint.json'
 
   test:
-    needs: [dotnet-format, lint-yaml, lint-markdown]
+    needs: [ dotnet-format, lint-yaml, lint-markdown ]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     concurrency:
@@ -87,9 +87,9 @@ jobs:
         with:
           restore: 'true'
       - name: Build
-        run: dotnet build $SLN --no-restore --configuration $TYPE_BUILD
+        run: dotnet build ${{ env.SLN }} --no-restore --configuration ${{ env.TYPE_BUILD }}
       - name: Test
-        run: dotnet test $SLN --no-build --configuration $TYPE_BUILD --verbosity $VERBOSITY
+        run: dotnet test ${{ env.SLN }} --no-build --configuration ${{ env.TYPE_BUILD }} --verbosity ${{ env.VERBOSITY }}
       - name: Upload test results (optional)
         uses: actions/upload-artifact@v4
         if: always()

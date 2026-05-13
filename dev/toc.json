@@ -1,2 +1,0 @@
-
-{"items":[{"name":"Введение","href":"introduction.html","topicHref":"introduction.html"},{"name":"Начало работы","href":"getting-started.html","topicHref":"getting-started.html"},{"name":"Правила проекта","includedFrom":"~/rules/toc.yml","items":[{"name":"Создание веток","href":"rules/BranchCreation.html","topicHref":"rules/BranchCreation.html"},{"name":"Планирование классов","href":"rules/ClassPlanning.html","topicHref":"rules/ClassPlanning.html"}]}],"disableClickToCopy":false,"pdf":true}

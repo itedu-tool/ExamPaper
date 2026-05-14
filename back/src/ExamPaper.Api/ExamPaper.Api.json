@@ -1,0 +1,303 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Генератор экзаменационных билетов",
+    "license": {
+      "name": "Apache License, Version 2",
+      "url": "https://opensource.org/licenses/Apache-2.0"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/questions": {
+      "get": {
+        "tags": [
+          "Questions"
+        ],
+        "operationId": "GetAllQuestions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IQuestion"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Questions"
+        ],
+        "operationId": "CreateQuestion",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuestionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IQuestion"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/api/questions/{id}": {
+      "get": {
+        "tags": [
+          "Questions"
+        ],
+        "operationId": "GetQuestionById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IQuestion"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Questions"
+        ],
+        "operationId": "DeleteQuestion",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found"
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/exam/generate": {
+      "post": {
+        "tags": [
+          "Exams"
+        ],
+        "operationId": "GenerateExamPapers",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerationSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IExamPaper"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/exam/export/pdf": {
+      "post": {
+        "tags": [
+          "Exams"
+        ],
+        "operationId": "ExportExamPdf",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerationSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/exam/export/json": {
+      "post": {
+        "tags": [
+          "Exams"
+        ],
+        "operationId": "ExportExamJson",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerationSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateQuestionDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Содержимое вопроса"
+          }
+        },
+        "description": "Dto для создание вопросов из WebApi"
+      },
+      "GenerationSettings": {
+        "type": "object",
+        "properties": {
+          "totalTicketsCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "Общее количество билетов.",
+            "format": "int32"
+          },
+          "questionsPerTicketCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "Количество вопросов в одном билете.",
+            "format": "int32"
+          },
+          "ticketNameTemplate": {
+            "type": "string"
+          }
+        },
+        "description": "Реализация настроек генерации экзаменационных билетов."
+      },
+      "IExamPaper": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Уникальный Guid идентификатор билета.",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "description": "Название билета."
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IQuestion"
+            },
+            "description": "Список вопросов, попавших в данный билет."
+          }
+        },
+        "description": "Интерфейс экзаменационного билета"
+      },
+      "IQuestion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Уникальный Guid идентификатор вопроса.",
+            "format": "uuid"
+          },
+          "text": {
+            "type": "string",
+            "description": "Текст вопроса."
+          }
+        },
+        "description": "Интерфейс экзаменационного вопроса."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Questions"
+    },
+    {
+      "name": "Exams"
+    }
+  ]
+}

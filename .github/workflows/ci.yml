@@ -69,7 +69,7 @@ jobs:
           level: error
           fail_level: any
           markdownlint_flags: '**/*.md --config .markdownlint.json'
-  
+          
   lint-openapi:
     runs-on: ubuntu-latest
     concurrency:
@@ -84,6 +84,10 @@ jobs:
           node-version: 24
       - name: Install Spectral
         run: npm install -g @stoplight/spectral-cli
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
       - name: Run Spectral with reviewdog
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

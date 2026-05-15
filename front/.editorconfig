@@ -2,8 +2,6 @@
 # for multiple developers working on the same project across editors and IDEs.
 # Learn more: https://editorconfig.org
 
-root = true
-
 [*]
 indent_style = space
 indent_size = 2

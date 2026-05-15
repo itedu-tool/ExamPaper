@@ -13,7 +13,7 @@ import {
   <BApp>
     <header>
       <BNavbar toggleable="lg" variant="light" bg="light">
-        <BNavbarBrand to="/">Генератор экзаменов</BNavbarBrand>
+        <BNavbarBrand to="/">Генератор экзаменационных билетов</BNavbarBrand>
         <BNavbarNav>
           <BNavItem>
             <BLink to="/questions" exact-active-class="active">Вопросы</BLink>

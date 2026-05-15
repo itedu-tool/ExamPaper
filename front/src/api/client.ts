@@ -7,11 +7,9 @@ const apiClient = axios.create({
   },
 });
 
-// Интерцептор для обработки ошибок (опционально)
 apiClient.interceptors.response.use(
   response => response,
   error => {
-    // можно глобально показывать уведомления об ошибках
     return Promise.reject(error);
   }
 );

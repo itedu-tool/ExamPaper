@@ -12,7 +12,6 @@ export interface ExamGenerationResult {
   tickets: TicketDto[];
 }
 
-// Настройки, отправляемые на сервер
 export interface GenerationSettings {
   totalTicketsCount: number;
   questionsPerTicketCount: number;

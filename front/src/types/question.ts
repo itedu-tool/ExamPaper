@@ -1,7 +1,7 @@
 export interface QuestionDto {
-  id: string;        // UUID
+  id: string;
   text: string;
-  createdAt: string; // ISO date
+  createdAt: string;
 }
 
 export interface CreateQuestionDto {

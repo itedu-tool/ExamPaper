@@ -2,7 +2,7 @@ extends: spectral:oas
 rules:
   operation-operationId: error
   operation-description: warning
+  info-contact: warn
   path-params: error
-  no-$ref-siblings: error
   oas3-valid-schema-example: error
-  info-contact: info
+  no-$ref-siblings: error

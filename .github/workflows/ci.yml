@@ -49,7 +49,7 @@ jobs:
           reporter: github-pr-review
           level: error
           fail_level: any
-          yamllint_flags: '-c .yamllint.yml .github/workflows/ .yamllint.yml'
+          yamllint_flags: '-c .yamllint.yml .github/workflows/ .yamllint.yml .spectral.yml'
 
   lint-markdown:
     runs-on: ubuntu-latest

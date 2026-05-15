@@ -70,13 +70,14 @@
 # Likewise, force cmd and batch scripts to always use crlf
 *.bat      text eol=crlf
 *.cmd      text eol=crlf
+*.ps1      text eol=crlf
 
 # Serialization
 *.json     text
 *.toml     text
 *.xml      text
-*.yaml     text
-*.yml      text
+*.yaml     text eol=lf
+*.yml      text eol=lf
 
 # Archives
 *.7z       binary

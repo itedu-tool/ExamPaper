@@ -3,7 +3,11 @@
     <Project Path="tests/ExamPaper.Api.IntegrationTests/ExamPaper.Api.IntegrationTests.csproj" />
     <Project Path="tests/ExamPaper.Tests/ExamPaper.Tests.csproj" />
   </Folder>
-  <Folder Name="/doc/">
+  <Folder Name="/cake/">
+    <File Path="../build.cs" />
+  </Folder>
+  <Folder Name="/doc/" />
+  <Folder Name="/doc/base/">
     <File Path="../CHANGELOG.md" />
     <File Path="../LICENSE" />
     <File Path="../README.md" />
@@ -17,12 +21,15 @@
     <File Path="../.github/workflows/ci.yml" />
   </Folder>
   <Folder Name="/others/">
-    <File Path="../.markdownlint.json" />
-    <File Path="../.spectral.yml" />
-    <File Path="../.yamllint.yml" />
     <File Path=".editorconfig" />
     <File Path="data.json" />
     <File Path="Directory.Build.props" />
+  </Folder>
+  <Folder Name="/others/base/">
+    <File Path="../.editorconfig" />
+    <File Path="../.markdownlint.json" />
+    <File Path="../.spectral.yml" />
+    <File Path="../.yamllint.yml" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/ExamPaper.Api/ExamPaper.Api.csproj" />

@@ -1,4 +1,4 @@
-﻿using ArchUnitNET.Loader;
+using ArchUnitNET.Loader;
 using ArchUnitNET.xUnit;
 
 using ExamPaper.Core.Models;

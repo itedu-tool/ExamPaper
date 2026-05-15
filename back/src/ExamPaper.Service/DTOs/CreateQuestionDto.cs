@@ -1,4 +1,4 @@
-﻿namespace ExamPaper.Service.DTOs;
+namespace ExamPaper.Service.DTOs;
 
 
 /// <summary>

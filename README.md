@@ -1,5 +1,7 @@
 # Диаграммы
+
 ## Прецедентов
+
 ```mermaid
 flowchart LR
   actor1[Пользователь]
@@ -16,6 +18,7 @@ flowchart LR
 ```
 
 ## Последовательности
+
 ```mermaid
 sequenceDiagram
     participant Пользователь
@@ -29,6 +32,7 @@ sequenceDiagram
 ```
 
 ## Компонентов
+
 ```mermaid
 flowchart
 subgraph Library
@@ -61,6 +65,7 @@ API-->Library
 ```
 
 ## Регламент
+
 - ![Создание ветки](rules/BranchCreation.md);
 - ![Создание файлов и директорий](rules/FileAndDirectoriesCreation.md);
 - ![Создание тест-кейсов](rules/TestCaseRegulations.md).
@@ -74,6 +79,7 @@ API-->Library
 - Экспорт в PDF (используя библиотеку QuestPDF)
 
 ## Контракты базовых сущностей
+
 ```cs
 namespace ExamPaper.Core.Interfaces
 {

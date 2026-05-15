@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ExamPaper.Core.Interfaces;
 using ExamPaper.Core.Models;
@@ -13,19 +15,35 @@ using ExamPaper.Service.Generator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi;
 
-const string version = "v1";
-const string name = "ExamPaperGenerator";
-var builder = WebApplication.CreateBuilder();
+using Scalar.AspNetCore;
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+WebApplicationBuilder builder = WebApplication.CreateBuilder();
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, _, _) =>
+    {
+        document.Info.Version = "v1";
+        document.Info.Title = "Генератор экзаменационных билетов";
+
+        document.Info.License = new OpenApiLicense
+        {
+            Name = "Apache License, Version 2",
+            Url = new Uri("https://opensource.org/licenses/Apache-2.0")
+        };
+
+        return Task.CompletedTask;
+    });
+});
 
 string solutionDirectory = Directory.GetParent(builder.Environment.ContentRootPath)?.FullName
                            ?? builder.Environment.ContentRootPath;
-string filePath = Path.Combine(solutionDirectory, "Data", "Blank.json");
+string filePath = Path.Combine(solutionDirectory, "Data", "data.json");
 
 
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>(_ => new QuestionRepository(filePath));
@@ -38,37 +56,49 @@ builder.Services.AddScoped<IExamGenerator, ExamPaperGenerator>();
 builder.Services.AddScoped<PdfExamExporter>();
 builder.Services.AddScoped<JsonExamExporter>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
+app.MapOpenApi();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{name}");
-    });
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
 
-
-app.MapGet("/api/questions", (IQuestionRepository repo) =>
+//TODO Точно ли это нужно делать в проде?
+app.UseExceptionHandler(exceptionHandlerApp =>
+{
+    exceptionHandlerApp.Run(async context =>
     {
-        var questions = repo.GetAllQuestions();
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        await context.Response.WriteAsJsonAsync(new { error = "Внутренняя ошибка сервера" });
+    });
+});
+
+#region Questions
+
+RouteGroupBuilder questionsGroup = app.MapGroup("/api/questions")
+    .WithTags("Questions");
+
+questionsGroup.MapGet("/", (IQuestionRepository repo) =>
+    {
+        IEnumerable<IQuestion> questions = repo.GetAllQuestions();
         return Results.Ok(questions);
     })
     .WithName("GetAllQuestions")
-    .WithTags("Questions");
+    .Produces<IEnumerable<IQuestion>>(StatusCodes.Status200OK);
 
-app.MapGet("/api/questions/{id:guid}", (Guid id, IQuestionRepository repo) =>
+questionsGroup.MapGet("/{id:guid}", (Guid id, IQuestionRepository repo) =>
     {
-        var question = repo.GetQuestionById(id);
+        IQuestion? question = repo.GetQuestionById(id);
         return question is not null ? Results.Ok(question) : Results.NotFound(new { error = "Вопрос не найден." });
     })
     .WithName("GetQuestionById")
-    .WithTags("Questions");
+    .Produces<IQuestion>(StatusCodes.Status200OK)
+    .Produces(StatusCodes.Status404NotFound);
 
-app.MapPost("/api/questions", (
+questionsGroup.MapPost("/", (
         [FromBody] CreateQuestionDto dto,
         IQuestionRepository repo,
         IQuestionFactory factory) =>
@@ -80,8 +110,8 @@ app.MapPost("/api/questions", (
 
         try
         {
-            var newId = Guid.NewGuid();
-            var newQuestion = factory.CreateQuestion(newId, dto.Text);
+            Guid newId = Guid.NewGuid();
+            IQuestion newQuestion = factory.CreateQuestion(newId, dto.Text);
 
             repo.AddQuestion(newQuestion);
             repo.SaveChanges();
@@ -94,11 +124,13 @@ app.MapPost("/api/questions", (
         }
     })
     .WithName("CreateQuestion")
-    .WithTags("Questions");
+    .Produces<IQuestion>(StatusCodes.Status201Created)
+    .Produces(StatusCodes.Status400BadRequest)
+    .Produces(StatusCodes.Status409Conflict);
 
-app.MapDelete("/api/questions/{id:guid}", (Guid id, IQuestionRepository repo) =>
+questionsGroup.MapDelete("/{id:guid}", (Guid id, IQuestionRepository repo) =>
     {
-        var question = repo.GetQuestionById(id);
+        IQuestion? question = repo.GetQuestionById(id);
         if (question is null)
         {
             return Results.NotFound(new { error = "Вопрос не найден." });
@@ -110,16 +142,23 @@ app.MapDelete("/api/questions/{id:guid}", (Guid id, IQuestionRepository repo) =>
         return Results.NoContent();
     })
     .WithName("DeleteQuestion")
-    .WithTags("Questions");
+    .Produces(StatusCodes.Status404NotFound)
+    .Produces(StatusCodes.Status204NoContent);
 
+#endregion
 
-app.MapPost("/api/exam/generate", (
+#region Examinations
+
+RouteGroupBuilder examinationGroup = app.MapGroup("/api/exam")
+    .WithTags("Exams");
+
+examinationGroup.MapPost("/generate", (
         [FromBody] GenerationSettings settings,
         IExamGenerator generator) =>
     {
         try
         {
-            var tickets = generator.Generate(settings);
+            IEnumerable<IExamPaper> tickets = generator.Generate(settings);
             return Results.Ok(tickets);
         }
         catch (InvalidOperationException ex)
@@ -128,16 +167,17 @@ app.MapPost("/api/exam/generate", (
         }
     })
     .WithName("GenerateExamPapers")
-    .WithTags("Exams");
+    .Produces<IEnumerable<IExamPaper>>(StatusCodes.Status200OK)
+    .Produces(StatusCodes.Status400BadRequest);
 
-app.MapPost("/api/exam/export/pdf", (
+examinationGroup.MapPost("/export/pdf", (
         [FromBody] GenerationSettings settings,
         IExamGenerator generator,
         PdfExamExporter exporter) =>
     {
         try
         {
-            var tickets = generator.Generate(settings).ToList();
+            List<IExamPaper> tickets = generator.Generate(settings).ToList();
             byte[] fileBytes = exporter.Export(tickets);
             return Results.File(fileBytes, "application/pdf", "exams.pdf");
         }
@@ -147,16 +187,17 @@ app.MapPost("/api/exam/export/pdf", (
         }
     })
     .WithName("ExportExamPdf")
-    .WithTags("Exams");
+    .Produces(StatusCodes.Status200OK, contentType: "application/pdf")
+    .Produces(StatusCodes.Status400BadRequest);
 
-app.MapPost("/api/exam/export/json", (
+examinationGroup.MapPost("/export/json", (
         [FromBody] GenerationSettings settings,
         IExamGenerator generator,
         JsonExamExporter exporter) =>
     {
         try
         {
-            var tickets = generator.Generate(settings).ToList();
+            List<IExamPaper> tickets = generator.Generate(settings).ToList();
             byte[] fileBytes = exporter.Export(tickets);
             return Results.File(fileBytes, "application/json", "exams.json");
         }
@@ -166,6 +207,9 @@ app.MapPost("/api/exam/export/json", (
         }
     })
     .WithName("ExportExamJson")
-    .WithTags("Exams");
+    .Produces(StatusCodes.Status200OK, contentType: "application/json")
+    .Produces(StatusCodes.Status400BadRequest);
 
-app.Run();
+#endregion
+
+await app.RunAsync();

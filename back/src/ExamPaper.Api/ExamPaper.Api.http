@@ -1,6 +1,54 @@
-@ExamPaper.Api_HostAddress = http://localhost:5047
+@baseUrl = https://localhost:5047/api
+@questionId = 123e4567-e89b-12d3-a456-426614174000
 
-GET {{ExamPaper.Api_HostAddress}}/weatherforecast/
+@questionsUrl = {{baseUrl}}/questions
+@examUrl = {{baseUrl}}/exam
+
+### Получить все вопросы
+GET {{questionsUrl}}
 Accept: application/json
 
-###
+### Получить вопрос по ID (замените реальным GUID)
+GET {{questionsUrl}}/{{questionId}}
+Accept: application/json
+
+### Создать новый вопрос
+POST {{questionsUrl}}
+Content-Type: application/json
+
+{
+  "text": "Что такое ASP.NET Core?"
+}
+
+### Удалить вопрос (замените на реальный GUID)
+DELETE {{questionsUrl}}/{{questionId}}
+
+### Сгенерировать экзаменационные билеты
+POST {{examUrl}}/generate
+Content-Type: application/json
+
+{
+  "ticketCount": 3,
+  "questionsPerTicket": 2,
+  "ticketNameTemplate": "Билет {0}"
+}
+
+### Экспортировать билеты в PDF
+POST {{examUrl}}/export/pdf
+Content-Type: application/json
+
+{
+  "ticketCount": 2,
+  "questionsPerTicket": 1,
+  "ticketNameTemplate": "Экзамен {0}"
+}
+
+### Экспортировать билеты в JSON
+POST {{examUrl}}/export/json
+Content-Type: application/json
+
+{
+  "ticketCount": 2,
+  "questionsPerTicket": 1,
+  "ticketNameTemplate": "Экзамен {0}"
+}

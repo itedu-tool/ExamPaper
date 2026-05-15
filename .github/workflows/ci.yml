@@ -1,11 +1,9 @@
----
 name: CI
-
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
 
 permissions:
@@ -35,7 +33,7 @@ jobs:
           restore: 'true'
       - name: Verify formatting
         run: dotnet format ${{ env.SLN }} --verify-no-changes --no-restore
-  
+
   lint-yaml:
     runs-on: ubuntu-latest
     concurrency:
@@ -70,8 +68,33 @@ jobs:
           fail_level: any
           markdownlint_flags: '**/*.md --config .markdownlint.json'
 
+  lint-openapi:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: openapi-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Install Spectral
+        run: npm install -g @stoplight/spectral-cli
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+      - name: Run Spectral with reviewdog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          spectral lint back/src/ExamPaper.Api/ExamPaper.Api.json -f text | \
+          reviewdog -efm="%f:%l:%c %t%*[^ ] %m" -name="spectral" -reporter=github-pr-review
+
   test:
-    needs: [ dotnet-format, lint-yaml, lint-markdown ]
+    needs: [dotnet-format, lint-yaml, lint-markdown, lint-openapi]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     concurrency:

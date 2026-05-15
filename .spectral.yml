@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 extends: spectral:oas
 rules:
   operation-operationId: error
@@ -6,3 +7,23 @@ rules:
   no-$ref-siblings: error
   oas3-valid-schema-example: error
   info-contact: info
+=======
+extends:
+  - spectral:oas
+rules:
+  oas3-parameter-description: off
+  info-contact: warn
+
+  operation-operationId: error
+  operation-description: warning
+  path-params: error
+  oas3-valid-schema-example: error
+  no-$ref-siblings: error
+
+  custom-response-example:
+    description: "Для всех ответов с JSON должен быть пример"
+    given: "$.paths[*][*].responses[*].content['application/json']"
+    then:
+      field: examples
+      function: truthy
+>>>>>>> Stashed changes

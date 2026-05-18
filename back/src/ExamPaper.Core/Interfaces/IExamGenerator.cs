@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ExamPaper.Core.Interfaces;
 
 using System.Collections.Generic;
-
 
 public interface IExamGenerator
 {

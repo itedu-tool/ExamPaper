@@ -2,9 +2,11 @@
   <div>
     <h2>Генерация билетов</h2>
     <form @submit.prevent="generate">
-      <label>Количество билетов: <input type="number" v-model.number="settings.totalTicketsCount" min="1" required /></label>
-      <label>Вопросов в билете: <input type="number" v-model.number="settings.questionsPerTicketCount" min="1" required /></label>
-      <label>Шаблон названия (например, "Билет {0}"): <input v-model="settings.ticketNameTemplate" required /></label>
+      <label>Количество билетов: <input type="number" v-model.number="settings.totalTicketsCount" min="1"
+                                        required/></label>
+      <label>Вопросов в билете: <input type="number" v-model.number="settings.questionsPerTicketCount" min="1"
+                                       required/></label>
+      <label>Шаблон названия (например, "Билет {0}"): <input v-model="settings.ticketNameTemplate" required/></label>
       <button type="submit" :disabled="loading">Сгенерировать</button>
     </form>
     <div v-if="loading">Генерация...</div>
@@ -25,9 +27,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { ExamsApi } from '@/api/exams';
-import type { GenerationSettings, ExamGenerationResult } from '@/types/exam';
+import {reactive, ref} from 'vue';
+import {ExamsApi} from '@/api/exams';
+import type {GenerationSettings, ExamGenerationResult} from '@/types/exam';
 
 const settings = reactive<GenerationSettings>({
   totalTicketsCount: 3,

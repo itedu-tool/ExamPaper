@@ -1,4 +1,4 @@
-import type { QuestionDto } from './question';
+import type {QuestionDto} from './question';
 
 export interface TicketDto {
   ticketName: string;

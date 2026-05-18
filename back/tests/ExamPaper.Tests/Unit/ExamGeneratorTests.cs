@@ -72,12 +72,13 @@ public class ExamPaperGeneratorTests
         [Fact]
         public void Generate_WhenNotEnoughQuestions_ThrowsInvalidOperationException()
         {
-            var questions = CreateTestQuestions(2);
+            List<IQuestion> questions = CreateTestQuestions(2);
             _questionProviderMock.Setup(p => p.GetAllQuestions()).Returns(questions);
 
-            var settings = new GenerationSettings { TotalTicketsCount = 5, QuestionsPerTicketCount = 3 };
+            GenerationSettings settings = new() { TotalTicketsCount = 5, QuestionsPerTicketCount = 3 };
 
-            var exception = Assert.Throws<InvalidOperationException>(() => _generator.Generate(settings));
+            InvalidOperationException exception =
+                Assert.Throws<InvalidOperationException>(() => _generator.Generate(settings));
             Assert.Contains("Недостаточно вопросов", exception.Message);
         }
     }
@@ -93,12 +94,12 @@ public class ExamPaperGeneratorTests
         [Fact]
         public void Generate_WithValidParameters_ReturnsCorrectNumberOfTickets()
         {
-            var questions = CreateTestQuestions(10);
+            List<IQuestion> questions = CreateTestQuestions(10);
             _questionProviderMock.Setup(p => p.GetAllQuestions()).Returns(questions);
 
-            var settings = new GenerationSettings { TotalTicketsCount = 5, QuestionsPerTicketCount = 2 };
+            GenerationSettings settings = new() { TotalTicketsCount = 5, QuestionsPerTicketCount = 2 };
 
-            var tickets = _generator.Generate(settings).ToList();
+            List<IExamPaper> tickets = _generator.Generate(settings).ToList();
 
             Assert.Equal(5, tickets.Count);
             _examPaperFactoryMock.Verify(f => f.CreateExamPaper(
@@ -112,13 +113,13 @@ public class ExamPaperGeneratorTests
         [Fact]
         public void Generate_EachTicket_ContainsCorrectNumberOfQuestions()
         {
-            var questions = CreateTestQuestions(20);
+            List<IQuestion> questions = CreateTestQuestions(20);
             _questionProviderMock.Setup(p => p.GetAllQuestions()).Returns(questions);
 
             int expectedCount = 3;
-            var settings = new GenerationSettings { TotalTicketsCount = 4, QuestionsPerTicketCount = expectedCount };
+            GenerationSettings settings = new() { TotalTicketsCount = 4, QuestionsPerTicketCount = expectedCount };
 
-            var tickets = _generator.Generate(settings).ToList();
+            List<IExamPaper> tickets = _generator.Generate(settings).ToList();
 
             Assert.All(tickets, t => Assert.Equal(expectedCount, t.Questions.Count));
         }
@@ -135,12 +136,12 @@ public class ExamPaperGeneratorTests
         [Fact]
         public void Generate_MultipleTimes_ProducesDifferentResults()
         {
-            var questions = CreateTestQuestions(20);
+            List<IQuestion> questions = CreateTestQuestions(20);
             _questionProviderMock.Setup(p => p.GetAllQuestions()).Returns(questions);
-            var settings = new GenerationSettings { TotalTicketsCount = 2, QuestionsPerTicketCount = 5 };
+            GenerationSettings settings = new() { TotalTicketsCount = 2, QuestionsPerTicketCount = 5 };
 
-            var firstGen = _generator.Generate(settings).ToList();
-            var secondGen = _generator.Generate(settings).ToList();
+            List<IExamPaper> firstGen = _generator.Generate(settings).ToList();
+            List<IExamPaper> secondGen = _generator.Generate(settings).ToList();
 
             bool areDifferent = !firstGen[0].Questions.Select(q => q.Id)
                 .SequenceEqual(secondGen[0].Questions.Select(q => q.Id));
@@ -160,17 +161,17 @@ public class ExamPaperGeneratorTests
         [Fact]
         public void Generate_WithCustomTemplate_UsesItForNames()
         {
-            var questions = CreateTestQuestions(5);
+            List<IQuestion> questions = CreateTestQuestions(5);
             _questionProviderMock.Setup(p => p.GetAllQuestions()).Returns(questions);
 
-            var settings = new GenerationSettings
+            GenerationSettings settings = new()
             {
                 TotalTicketsCount = 1,
                 QuestionsPerTicketCount = 2,
                 TicketNameTemplate = "Test Template {0}"
             };
 
-            var tickets = _generator.Generate(settings).ToList();
+            List<IExamPaper> tickets = _generator.Generate(settings).ToList();
 
             Assert.Equal("Test Template 1", tickets[0].Title);
         }

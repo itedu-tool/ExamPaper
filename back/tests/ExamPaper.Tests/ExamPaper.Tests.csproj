@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ExamPaper.Core\ExamPaper.Core.csproj" />
-    <ProjectReference Include="..\..\src\ExamPaper.Infrastructure\ExamPaper.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\ExamPaper.Service\ExamPaper.Service.csproj" />
+    <ProjectReference Include="..\..\src\ExamPaper.Core\ExamPaper.Core.csproj"/>
+    <ProjectReference Include="..\..\src\ExamPaper.Infrastructure\ExamPaper.Infrastructure.csproj"/>
+    <ProjectReference Include="..\..\src\ExamPaper.Service\ExamPaper.Service.csproj"/>
   </ItemGroup>
 </Project>

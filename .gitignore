@@ -480,3 +480,14 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Cake output directories
+tools/
+_build/
+_artifacts/
+
+# Cake local tool (if installed via dotnet tool)
+.dotnet/
+packages/
+
+build_report_*.html

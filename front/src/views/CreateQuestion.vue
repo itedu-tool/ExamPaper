@@ -4,7 +4,7 @@
     <form @submit.prevent="submit">
       <label>
         Текст вопроса:
-        <textarea v-model="text" rows="3" required />
+        <textarea v-model="text" rows="3" required/>
       </label>
       <div v-if="error" class="error">{{ error }}</div>
       <button type="submit" :disabled="saving">Сохранить</button>
@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { QuestionsApi } from '@/api/questions';
+import {ref} from 'vue';
+import {useRouter} from 'vue-router';
+import {QuestionsApi} from '@/api/questions';
 
 const text = ref('');
 const saving = ref(false);
@@ -27,7 +27,7 @@ async function submit() {
   saving.value = true;
   error.value = '';
   try {
-    await QuestionsApi.create({ text: text.value });
+    await QuestionsApi.create({text: text.value});
     router.push('/questions');
   } catch (e: any) {
     error.value = e?.response?.data?.title || 'Ошибка при сохранении';

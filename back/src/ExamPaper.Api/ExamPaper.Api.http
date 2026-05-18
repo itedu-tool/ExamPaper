@@ -17,7 +17,7 @@ POST {{questionsUrl}}
 Content-Type: application/json
 
 {
-  "text": "Что такое ASP.NET Core?"
+    "text": "Что такое ASP.NET Core?"
 }
 
 ### Удалить вопрос (замените на реальный GUID)
@@ -28,9 +28,9 @@ POST {{examUrl}}/generate
 Content-Type: application/json
 
 {
-  "ticketCount": 3,
-  "questionsPerTicket": 2,
-  "ticketNameTemplate": "Билет {0}"
+    "ticketCount": 3,
+    "questionsPerTicket": 2,
+    "ticketNameTemplate": "Билет {0}"
 }
 
 ### Экспортировать билеты в PDF
@@ -38,9 +38,9 @@ POST {{examUrl}}/export/pdf
 Content-Type: application/json
 
 {
-  "ticketCount": 2,
-  "questionsPerTicket": 1,
-  "ticketNameTemplate": "Экзамен {0}"
+    "ticketCount": 2,
+    "questionsPerTicket": 1,
+    "ticketNameTemplate": "Экзамен {0}"
 }
 
 ### Экспортировать билеты в JSON
@@ -48,7 +48,7 @@ POST {{examUrl}}/export/json
 Content-Type: application/json
 
 {
-  "ticketCount": 2,
-  "questionsPerTicket": 1,
-  "ticketNameTemplate": "Экзамен {0}"
+    "ticketCount": 2,
+    "questionsPerTicket": 1,
+    "ticketNameTemplate": "Экзамен {0}"
 }

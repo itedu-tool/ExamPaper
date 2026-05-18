@@ -1,5 +1,5 @@
 import apiClient from './client';
-import type { QuestionDto, CreateQuestionDto } from '@/types/question';
+import type {QuestionDto, CreateQuestionDto} from '@/types/question';
 
 export const QuestionsApi = {
   getAll(): Promise<QuestionDto[]> {

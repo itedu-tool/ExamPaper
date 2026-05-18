@@ -227,6 +227,4 @@ public sealed class QuestionRepository : IQuestionRepository
 
         return filePath;
     }
-
-
 }

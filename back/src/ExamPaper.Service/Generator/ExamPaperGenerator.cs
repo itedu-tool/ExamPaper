@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ExamPaper.Core.Interfaces;
+using Core.Interfaces;
 
 /// <summary>
 ///     Сервисный класс, оркестрирующая процесс генерации билетов.
@@ -54,7 +54,7 @@ public class ExamPaperGenerator : IExamGenerator
             .Range(1, settings.TotalTicketsCount)
             .Select(ticketNum =>
             {
-                var selectedQuestions = availableQuestions
+                List<IQuestion> selectedQuestions = availableQuestions
                     .OrderBy(_ => random.Next())
                     .Take(settings.QuestionsPerTicketCount)
                     .ToList();

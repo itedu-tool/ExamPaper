@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { QuestionsApi } from '@/api/questions';
-import type { QuestionDto } from '@/types/question';
+import {ref, onMounted} from 'vue';
+import {QuestionsApi} from '@/api/questions';
+import type {QuestionDto} from '@/types/question';
 
 const questions = ref<QuestionDto[]>([]);
 const loading = ref(true);

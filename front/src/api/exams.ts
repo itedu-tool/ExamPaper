@@ -1,5 +1,5 @@
 import apiClient from './client';
-import type { GenerationSettings, ExamGenerationResult } from '@/types/exam';
+import type {GenerationSettings, ExamGenerationResult} from '@/types/exam';
 
 export const ExamsApi = {
   generate(settings: GenerationSettings): Promise<ExamGenerationResult> {

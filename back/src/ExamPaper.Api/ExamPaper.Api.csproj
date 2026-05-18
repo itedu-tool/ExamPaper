@@ -3,9 +3,9 @@
     <OpenApiDocumentsDirectory>.</OpenApiDocumentsDirectory>
     <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(OpenApiVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(OpenApiVersion)"/>
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="$(OpenApiVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExamPaper.Infrastructure\ExamPaper.Infrastructure.csproj" />
-    <ProjectReference Include="..\ExamPaper.Service\ExamPaper.Service.csproj" />
+    <ProjectReference Include="..\ExamPaper.Infrastructure\ExamPaper.Infrastructure.csproj"/>
+    <ProjectReference Include="..\ExamPaper.Service\ExamPaper.Service.csproj"/>
   </ItemGroup>
 </Project>

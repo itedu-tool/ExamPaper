@@ -26,7 +26,7 @@ import {
     </header>
 
     <main>
-      <router-view />
+      <router-view/>
     </main>
   </BApp>
 </template>

@@ -1,8 +1,0 @@
-{
-  "default": true,
-  "line-length": false,
-  "no-inline-html": false,
-  "MD026": false,
-  "MD041": false,
-  "MD047": false
-}

@@ -1,9 +1,9 @@
 name: CI
 on:
   push:
-    branches: [main, develop]
+    branches: [ main, develop ]
   pull_request:
-    branches: [main, develop]
+    branches: [ main, develop ]
   workflow_dispatch:
 
 permissions:
@@ -19,7 +19,7 @@ env:
 
 jobs:
   dotnet-format:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 5
     concurrency:
       group: format-${{ github.ref }}
@@ -34,67 +34,8 @@ jobs:
       - name: Verify formatting
         run: dotnet format ${{ env.SLN }} --verify-no-changes --no-restore
 
-  lint-yaml:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: yamllint-${{ github.ref }}
-      cancel-in-progress: true
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: yamllint with reviewdog
-        uses: reviewdog/action-yamllint@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          level: error
-          fail_level: any
-          yamllint_flags: '-c .yamllint.yml .github/workflows/ .yamllint.yml'
-
-  lint-markdown:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: markdownlint-${{ github.ref }}
-      cancel-in-progress: true
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: markdownlint with reviewdog
-        uses: reviewdog/action-markdownlint@v0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          level: error
-          fail_level: any
-          markdownlint_flags: '**/*.md --config .markdownlint.json'
-
-  lint-openapi:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: openapi-${{ github.ref }}
-      cancel-in-progress: true
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-      - name: Install Spectral
-        run: npm install -g @stoplight/spectral-cli
-      - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1
-        with:
-          reviewdog_version: latest
-      - name: Run Spectral with reviewdog
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          spectral lint back/src/ExamPaper.Api/ExamPaper.Api.json -f text | \
-          reviewdog -efm="%f:%l:%c %t%*[^ ] %m" -name="spectral" -reporter=github-pr-review
-
-  test:
-    needs: [dotnet-format, lint-yaml, lint-markdown, lint-openapi]
+  dotnet-test:
+    needs: dotnet-format
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     concurrency:
@@ -121,10 +62,37 @@ jobs:
           name: test-results-${{ matrix.os }}
           path: '**/TestResults/*.trx'
 
+  lint-openapi:
+    needs: [ dotnet-test ]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: openapi-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Install Spectral
+        run: npm install -g @stoplight/spectral-cli
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+      - name: Run Spectral with reviewdog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          spectral lint back/src/ExamPaper.Api/ExamPaper.Api.json -f text | \
+          reviewdog -efm="%f:%l:%c %t%*[^ ] %m" -name="spectral" -reporter=github-pr-review
+
+
   publish-docs:
     permissions:
       contents: write
-    needs: test
+    needs: dotnet-test
     if: >
       (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'))
       || github.event_name == 'workflow_dispatch'

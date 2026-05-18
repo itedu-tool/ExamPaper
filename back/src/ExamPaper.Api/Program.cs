@@ -33,7 +33,8 @@ builder.Services.AddOpenApi(options =>
 
         document.Info.License = new OpenApiLicense
         {
-            Name = "Apache License, Version 2", Url = new Uri("https://opensource.org/licenses/Apache-2.0")
+            Name = "Apache License, Version 2",
+            Url = new Uri("https://opensource.org/licenses/Apache-2.0")
         };
 
         return Task.CompletedTask;

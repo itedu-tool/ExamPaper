@@ -13,7 +13,8 @@ public sealed class JsonExamExporter : IExamExporter
 {
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
-        WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
     /// <summary>

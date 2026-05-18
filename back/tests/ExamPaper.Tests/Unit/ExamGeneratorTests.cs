@@ -166,7 +166,9 @@ public class ExamPaperGeneratorTests
 
             GenerationSettings settings = new()
             {
-                TotalTicketsCount = 1, QuestionsPerTicketCount = 2, TicketNameTemplate = "Test Template {0}"
+                TotalTicketsCount = 1,
+                QuestionsPerTicketCount = 2,
+                TicketNameTemplate = "Test Template {0}"
             };
 
             List<IExamPaper> tickets = _generator.Generate(settings).ToList();

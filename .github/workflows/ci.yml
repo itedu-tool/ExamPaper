@@ -1,9 +1,9 @@
 name: CI
 on:
   push:
-    branches: [main, develop]
+    branches: [ main, develop ]
   pull_request:
-    branches: [main, develop]
+    branches: [ main, develop ]
   workflow_dispatch:
 
 permissions:
@@ -63,7 +63,7 @@ jobs:
           path: '**/TestResults/*.trx'
 
   lint-openapi:
-    needs: [dotnet-test]
+    needs: [ dotnet-test ]
     runs-on: ubuntu-latest
     concurrency:
       group: openapi-${{ github.ref }}

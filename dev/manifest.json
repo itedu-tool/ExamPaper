@@ -36,7 +36,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "ExamPaper.Core.Interfaces.IExamGenerator",
-      "Summary": null
+      "Summary": "<p sourcefile=\"api/ExamPaper.Core.Interfaces.IExamGenerator.yml\" sourcestartlinenumber=\"1\">Интерфейс для класса-генератора экзаменационных билетов.</p>\n"
     },
     {
       "type": "ManagedReference",

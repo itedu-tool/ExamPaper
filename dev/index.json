@@ -7,7 +7,7 @@
   "api/ExamPaper.Core.Interfaces.IExamGenerator.html": {
     "href": "api/ExamPaper.Core.Interfaces.IExamGenerator.html",
     "title": "Interface IExamGenerator | ExamPaper Documentation",
-    "summary": "Interface IExamGenerator Namespace ExamPaper.Core.Interfaces Assembly ExamPaper.Core.dll public interface IExamGenerator Methods Generate(IGenerationSettings) Формирует коллекцию экзаменационных билетов на основе заданных правил. Оркестрирует получение вопросов и создание билетов. IEnumerable<IExamPaper> Generate(IGenerationSettings settings) Parameters settings IGenerationSettings Объект конфигурации, определяющий параметры генерации. Returns IEnumerable<IExamPaper>"
+    "summary": "Interface IExamGenerator Namespace ExamPaper.Core.Interfaces Assembly ExamPaper.Core.dll Интерфейс для класса-генератора экзаменационных билетов. public interface IExamGenerator Methods Generate(IGenerationSettings) Формирует коллекцию экзаменационных билетов на основе заданных правил. Оркестрирует получение вопросов и создание билетов. IEnumerable<IExamPaper> Generate(IGenerationSettings settings) Parameters settings IGenerationSettings Объект конфигурации, определяющий параметры генерации. Returns IEnumerable<IExamPaper>"
   },
   "api/ExamPaper.Core.Interfaces.IExamPaper.html": {
     "href": "api/ExamPaper.Core.Interfaces.IExamPaper.html",
@@ -52,7 +52,7 @@
   "api/ExamPaper.Core.Interfaces.html": {
     "href": "api/ExamPaper.Core.Interfaces.html",
     "title": "Namespace ExamPaper.Core.Interfaces | ExamPaper Documentation",
-    "summary": "Namespace ExamPaper.Core.Interfaces Interfaces IExamExporter Контракт для экспорта экзаменационных билетов в файл. IExamGenerator IExamPaper Интерфейс экзаменационного билета IExamPaperFactory интервейс фбрики ExamPaper IGenerationSettings Контракт для хранения параметров генерации билетов. IQuestion Интерфейс экзаменационного вопроса. IQuestionFactory Интерфейс фабрики создания вопросов QuestionFactory IQuestionModifier Контракт для изменения пула экзаменационных вопросов IQuestionProvider Определяет контракт для компонента, обеспечивающего доступ к коллекции вопросов. IQuestionRepository Репозиторий для управления вопросами. Объединяет чтение и модификацию данных."
+    "summary": "Namespace ExamPaper.Core.Interfaces Interfaces IExamExporter Контракт для экспорта экзаменационных билетов в файл. IExamGenerator Интерфейс для класса-генератора экзаменационных билетов. IExamPaper Интерфейс экзаменационного билета IExamPaperFactory интервейс фбрики ExamPaper IGenerationSettings Контракт для хранения параметров генерации билетов. IQuestion Интерфейс экзаменационного вопроса. IQuestionFactory Интерфейс фабрики создания вопросов QuestionFactory IQuestionModifier Контракт для изменения пула экзаменационных вопросов IQuestionProvider Определяет контракт для компонента, обеспечивающего доступ к коллекции вопросов. IQuestionRepository Репозиторий для управления вопросами. Объединяет чтение и модификацию данных."
   },
   "api/ExamPaper.Core.Models.ExamPaper.html": {
     "href": "api/ExamPaper.Core.Models.ExamPaper.html",

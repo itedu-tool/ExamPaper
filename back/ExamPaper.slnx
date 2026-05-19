@@ -1,38 +1,45 @@
 ﻿<Solution>
   <Folder Name="/test/">
-    <Project Path="tests/ExamPaper.Api.IntegrationTests/ExamPaper.Api.IntegrationTests.csproj"/>
-    <Project Path="tests/ExamPaper.Tests/ExamPaper.Tests.csproj"/>
+    <Project Path="tests/ExamPaper.Api.IntegrationTests/ExamPaper.Api.IntegrationTests.csproj" />
+    <Project Path="tests/ExamPaper.Tests/ExamPaper.Tests.csproj" />
   </Folder>
   <Folder Name="/cake/">
-    <File Path="../build.cs"/>
+    <File Path="../build.cs" />
   </Folder>
-  <Folder Name="/doc/"/>
+  <Folder Name="/doc/" />
   <Folder Name="/doc/base/">
-    <File Path="../CHANGELOG.md"/>
-    <File Path="../LICENSE"/>
-    <File Path="../README.md"/>
+    <File Path="../CHANGELOG.md" />
+    <File Path="../LICENSE" />
+    <File Path="../README.md" />
+  </Folder>
+  <Folder Name="/docker/">
+    <File Path="../.dockerignore" />
+    <File Path="../.env" />
+    <File Path="../docker-compose.yml" />
+    <File Path="../postgresql.conf" />
+    <File Path="../reset-docker.ps1" />
+    <File Path="../reset-docker.sh" />
   </Folder>
   <Folder Name="/git/">
-    <File Path="../.gitignore"/>
-    <File Path="../.gitattributes"/>
+    <File Path="../.gitignore" />
+    <File Path="../.gitattributes" />
   </Folder>
   <Folder Name="/github_actions/">
-    <File Path="../.github/actions/setup-dotnet-env/action.yml"/>
-    <File Path="../.github/workflows/ci.yml"/>
+    <File Path="../.github/actions/setup-dotnet-env/action.yml" />
+    <File Path="../.github/workflows/ci.yml" />
   </Folder>
   <Folder Name="/others/">
-    <File Path=".editorconfig"/>
-    <File Path="data.json"/>
-    <File Path="Directory.Build.props"/>
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
   </Folder>
   <Folder Name="/others/base/">
-    <File Path="../.editorconfig"/>
-    <File Path="../.spectral.yml"/>
+    <File Path="../.editorconfig" />
+    <File Path="../.spectral.yml" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/ExamPaper.Api/ExamPaper.Api.csproj"/>
-    <Project Path="src/ExamPaper.Core/ExamPaper.Core.csproj"/>
-    <Project Path="src/ExamPaper.Infrastructure/ExamPaper.Infrastructure.csproj"/>
-    <Project Path="src/ExamPaper.Service/ExamPaper.Service.csproj"/>
+    <Project Path="src/ExamPaper.Api/ExamPaper.Api.csproj" />
+    <Project Path="src/ExamPaper.Core/ExamPaper.Core.csproj" />
+    <Project Path="src/ExamPaper.Infrastructure/ExamPaper.Infrastructure.csproj" />
+    <Project Path="src/ExamPaper.Service/ExamPaper.Service.csproj" />
   </Folder>
 </Solution>

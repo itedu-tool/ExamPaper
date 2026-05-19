@@ -1,0 +1,13 @@
+.git
+.gitignore
+.github
+.idea
+.vscode
+bin
+obj
+node_modules
+dist
+*.log
+*.pdf
+.env.local
+.env.*.local

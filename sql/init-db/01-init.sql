@@ -1,3 +1,5 @@
+set time zone 'Europe/Moscow';
+
 -- Создание пользователя, если его ещё нет
 DO $$
 BEGIN
@@ -16,3 +18,4 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO ex
 
 -- Опциональные расширения
 CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+GRANT EXECUTE ON FUNCTION pg_stat_statements(IN boolean) TO exam_paper_docker;

@@ -87,11 +87,15 @@ $body$
 
 
 
+
 CREATE OR REPLACE FUNCTION audit.log_ddl_commands()
-    RETURNS event_trigger AS
+    RETURNS EVENT_TRIGGER AS
 $body$
 DECLARE
     action_record RECORD;
+    v_sql         TEXT;
+    v_schema_name TEXT;
+    v_table_name  TEXT;
 BEGIN
 
     FOR action_record IN SELECT * FROM pg_event_trigger_ddl_commands()
@@ -102,6 +106,35 @@ BEGIN
             VALUES (TG_TAG,
                     action_record.object_type,
                     action_record.object_identity);
+            IF TG_TAG = 'CREATE TABLE' AND action_record.object_type = 'table' THEN
+
+                SELECT n.nspname, c.relname
+                INTO v_schema_name, v_table_name
+                FROM pg_class c
+                         JOIN pg_namespace n ON n.oid = c.relnamespace
+                WHERE c.oid = action_record.objid;
+
+                IF v_schema_name NOT IN ('audit', 'pg_catalog', 'information_schema') THEN
+
+                    v_sql := format('
+                        CREATE TRIGGER %I
+                        AFTER INSERT OR UPDATE OR DELETE ON %I.%I
+                        FOR EACH ROW EXECUTE FUNCTION audit.if_modified_func();',
+                                    'audit_dml_' || v_table_name,
+                                    v_schema_name, v_table_name);
+                    EXECUTE v_sql;
+
+                    v_sql := format('
+                        CREATE TRIGGER %I
+                        AFTER TRUNCATE ON %I.%I
+                        FOR EACH STATEMENT EXECUTE FUNCTION audit.if_modified_func();',
+                                    'audit_trunc_' || v_table_name,
+                                    v_schema_name, v_table_name);
+                    EXECUTE v_sql;
+
+                END IF;
+            END IF;
+
         END LOOP;
 END;
 $body$ LANGUAGE plpgsql
@@ -130,3 +163,17 @@ END;
 $$ LANGUAGE plpgsql
     SECURITY DEFINER
     SET search_path = pg_temp;
+
+
+
+CREATE EVENT TRIGGER trigger_audit_ddl_create_alter
+    ON ddl_command_end
+    WHEN TAG IN ('CREATE TABLE', 'ALTER TABLE')
+EXECUTE FUNCTION audit.log_ddl_commands();
+
+CREATE EVENT TRIGGER trigger_audit_ddl_drop
+    ON sql_drop
+    WHEN TAG IN ('DROP TABLE')
+EXECUTE FUNCTION audit.log_ddl_drop_commands();
+
+

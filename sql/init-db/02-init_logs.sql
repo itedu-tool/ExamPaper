@@ -6,7 +6,7 @@ CREATE TABLE audit.log
 (
     id                BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     action_tstamp     TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
-    action            TEXT                                               NOT NULL CHECK (action IN ('I', 'D', 'U', 'T')),
+    action            TEXT                                               NOT NULL CHECK (action IN ('insert', 'delete', 'update', 'truncate')),
     table_schema      TEXT                                               NOT NULL,
     table_name        TEXT                                               NOT NULL,
     session_user_name TEXT                     DEFAULT session_user,
@@ -36,7 +36,7 @@ BEGIN
         END IF;
 
         INSERT INTO audit.log (table_schema, table_name, action, old_data, new_data)
-        VALUES (TG_TABLE_SCHEMA::text, TG_TABLE_NAME::text, 'U', v_old_data, v_new_data);
+        VALUES (TG_TABLE_SCHEMA::text, TG_TABLE_NAME::text, 'update', v_old_data, v_new_data);
 
         RETURN NEW;
 
@@ -44,7 +44,7 @@ BEGIN
         v_old_data := to_jsonb(OLD);
 
         INSERT INTO audit.log (table_schema, table_name, action, old_data)
-        VALUES (TG_TABLE_SCHEMA::text, TG_TABLE_NAME::text, 'D', v_old_data);
+        VALUES (TG_TABLE_SCHEMA::text, TG_TABLE_NAME::text, 'delete', v_old_data);
 
         RETURN OLD;
 
@@ -52,7 +52,7 @@ BEGIN
         v_new_data := to_jsonb(NEW);
 
         INSERT INTO audit.log (table_schema, table_name, action, new_data)
-        VALUES (TG_TABLE_SCHEMA::text, TG_TABLE_NAME::text, 'I', v_new_data);
+        VALUES (TG_TABLE_SCHEMA::text, TG_TABLE_NAME::text, 'insert', v_new_data);
 
         RETURN NEW;
     END IF;

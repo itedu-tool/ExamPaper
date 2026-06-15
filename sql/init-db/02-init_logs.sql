@@ -2,6 +2,20 @@ CREATE SCHEMA IF NOT EXISTS audit;
 
 REVOKE ALL ON SCHEMA audit FROM public;
 
+CREATE TABLE audit.ddl_log
+(
+    id                BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    event_tstamp      TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
+    action            TEXT                                               NOT NULL,
+    object_type       TEXT,
+    object_identity   TEXT,
+    session_user_name TEXT                     DEFAULT session_user,
+    client_query      TEXT                     DEFAULT current_query()
+);
+
+CREATE INDEX idx_audit_ddl_log_tstamp ON audit.ddl_log (event_tstamp);
+
+
 CREATE TABLE audit.log
 (
     id                BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -15,24 +29,11 @@ CREATE TABLE audit.log
     old_data          JSONB,
     new_data          JSONB
 );
-
 CREATE INDEX idx_audit_log_table ON audit.log (table_schema, table_name);
+
+
+
 CREATE INDEX idx_audit_log_tstamp ON audit.log (action_tstamp);
-
-
-
-CREATE TABLE audit.ddl_log
-(
-    id                BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    event_tstamp      TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
-    action            TEXT                                               NOT NULL,
-    object_type       TEXT,
-    object_identity   TEXT,
-    session_user_name TEXT                     DEFAULT session_user,
-    client_query      TEXT                     DEFAULT current_query()
-);
-
-CREATE INDEX idx_audit_ddl_log_tstamp ON audit.ddl_log (event_tstamp);
 
 
 CREATE OR REPLACE FUNCTION audit.if_modified_func()

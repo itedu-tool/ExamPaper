@@ -22,7 +22,8 @@ CREATE INDEX idx_audit_log_tstamp ON audit.log (action_tstamp);
 
 
 CREATE OR REPLACE FUNCTION audit.if_modified_func()
-    RETURNS trigger AS $body$
+    RETURNS trigger AS
+$body$
 DECLARE
     v_old_data jsonb;
     v_new_data jsonb;
@@ -55,6 +56,11 @@ BEGIN
         VALUES (TG_TABLE_SCHEMA::text, TG_TABLE_NAME::text, 'insert', v_new_data);
 
         RETURN NEW;
+
+    ELSIF (TG_OP = 'TRUNCATE') THEN
+        INSERT INTO audit.log (table_schema, table_name, action)
+        VALUES (TG_TABLE_SCHEMA::text, TG_TABLE_NAME::text, 'truncate');
+        RETURN NULL;
     END IF;
 
     RETURN NULL;

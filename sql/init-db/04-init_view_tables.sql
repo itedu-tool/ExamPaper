@@ -14,7 +14,6 @@ FROM table_exam_papers AS ep
 CREATE OR REPLACE VIEW view_exam_questions AS
 SELECT ep.id    AS exam_paper_id,
        ep.title AS exam_paper_title,
-       q.id     AS question_id,
        q.text   AS question_text,
        q.type   AS question_type
 

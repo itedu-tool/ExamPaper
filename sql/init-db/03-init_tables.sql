@@ -42,7 +42,8 @@ CREATE TABLE IF NOT EXISTS table_generation_settings
 (
     id                        UUID PRIMARY KEY DEFAULT uuidv7(),
     total_tickets_count       INTEGER NOT NULL,
-    questions_per_ticketCount INTEGER NOT NULL,
+    oral_questions_per_ticket        INTEGER NOT NULL DEFAULT 0,
+    practical_questions_per_ticket   INTEGER NOT NULL DEFAULT 0,
     ticket_name_template      TEXT    NOT NULL
 );
 

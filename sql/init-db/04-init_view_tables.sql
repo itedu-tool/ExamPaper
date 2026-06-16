@@ -1,7 +1,6 @@
 CREATE OR REPLACE VIEW view_exam_papers_detailed AS
 SELECT ep.id    AS exam_paper_id,
        ep.title AS exam_paper_title,
-       gs.id    AS generation_setting_id,
        gs.total_tickets_count,
        gs.oral_questions_per_ticket,
        gs.practical_questions_per_ticket,
@@ -26,9 +25,9 @@ FROM table_exam_paper_questions AS epq
 
 
 CREATE OR REPLACE VIEW view_questions_with_tags AS
-SELECT q.id                                                           AS question_id,
-       q.text                                                         AS question_text,
-       q.type                                                         AS question_type,
+SELECT q.id                                                                AS question_id,
+       q.text                                                              AS question_text,
+       q.type                                                              AS question_type,
 
        COALESCE(ARRAY_AGG(t.name) FILTER (WHERE t.name IS NOT NULL), '{}') AS tags
 FROM table_questions AS q

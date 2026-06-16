@@ -30,7 +30,7 @@ SELECT q.id                                                           AS questio
        q.text                                                         AS question_text,
        q.type                                                         AS question_type,
 
-       COALESCE(ARRAY_AGG(t.name)) FILTER ( WHERE t.name IS NOT NULL) AS tags
+       COALESCE(ARRAY_AGG(t.name) FILTER (WHERE t.name IS NOT NULL), '{}') AS tags
 FROM table_questions AS q
          LEFT JOIN table_question_tags AS qt ON q.id = qt.question_id
          LEFT JOIN table_tags AS t ON qt.tag_id = t.id

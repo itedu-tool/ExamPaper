@@ -1,3 +1,19 @@
+CREATE TABLE IF NOT EXISTS table_users
+(
+    id            UUID PRIMARY KEY DEFAULT uuidv7(),
+    email         TEXT NOT NULL,
+    password_hash TEXT NULL,
+
+    CONSTRAINT uq_user_email UNIQUE (email),
+
+    CONSTRAINT chk_user_email_format CHECK
+        ( email ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' ),
+
+    CONSTRAINT users_password_hash_length CHECK (length(password_hash) >= 40)
+
+);
+
+
 CREATE TYPE enum_question_type AS ENUM ('oral', 'practical');
 
 CREATE TABLE IF NOT EXISTS table_questions
@@ -40,11 +56,11 @@ CREATE TABLE IF NOT EXISTS table_question_tags
 
 CREATE TABLE IF NOT EXISTS table_generation_settings
 (
-    id                        UUID PRIMARY KEY DEFAULT uuidv7(),
-    total_tickets_count       INTEGER NOT NULL,
-    oral_questions_per_ticket        INTEGER NOT NULL DEFAULT 0,
-    practical_questions_per_ticket   INTEGER NOT NULL DEFAULT 0,
-    ticket_name_template      TEXT    NOT NULL
+    id                             UUID PRIMARY KEY DEFAULT uuidv7(),
+    total_tickets_count            INTEGER NOT NULL,
+    oral_questions_per_ticket      INTEGER NOT NULL DEFAULT 0,
+    practical_questions_per_ticket INTEGER NOT NULL DEFAULT 0,
+    ticket_name_template           TEXT    NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS table_exam_papers

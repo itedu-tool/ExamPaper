@@ -1,13 +1,44 @@
-CREATE TABLE IF NOT EXISTS questions
+CREATE TYPE enum_question_type AS ENUM ('oral', 'practical');
+
+CREATE TABLE IF NOT EXISTS table_questions
 (
     id   UUID PRIMARY KEY DEFAULT uuidv7(),
-    text TEXT NOT NUll,
+    text TEXT               NOT NUll,
+    type enum_question_type NOT NULL,
 
-    CONSTRAINT check_text_length CHECK ( length(text) > 0)
+    CONSTRAINT check_questions_text_length CHECK ( length(text) > 0)
 );
 
 
-CREATE TABLE IF NOT EXISTS generation_settings
+
+CREATE TABLE IF NOT EXISTS table_tags
+(
+    id   UUID PRIMARY KEY DEFAULT uuidv7(),
+    name TEXT NOT NULL,
+
+    CONSTRAINT uq_tags_name UNIQUE (name),
+    CONSTRAINT chk_tags_name_length CHECK ( length(name) > 0 )
+);
+
+
+CREATE TABLE IF NOT EXISTS table_question_tags
+(
+    question_id UUID NOT NULL,
+    tag_id      UUID NOT NULL,
+
+    CONSTRAINT pk_question_tags PRIMARY KEY (question_id, tag_id),
+
+    CONSTRAINT fk_question_tags_question
+        FOREIGN KEY (question_id)
+            REFERENCES table_questions (id) ON DELETE RESTRICT,
+
+    CONSTRAINT fk_question_tags_tag
+        FOREIGN KEY (tag_id)
+            REFERENCES table_tags (id) ON DELETE RESTRICT
+
+);
+
+CREATE TABLE IF NOT EXISTS table_generation_settings
 (
     id                        UUID PRIMARY KEY DEFAULT uuidv7(),
     total_tickets_count       INTEGER NOT NULL,
@@ -15,7 +46,7 @@ CREATE TABLE IF NOT EXISTS generation_settings
     ticket_name_template      TEXT    NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS exam_papers
+CREATE TABLE IF NOT EXISTS table_exam_papers
 (
     id                    UUID PRIMARY KEY DEFAULT uuidv7(),
     generation_setting_id UUID NOT NULL,
@@ -25,24 +56,24 @@ CREATE TABLE IF NOT EXISTS exam_papers
 
     CONSTRAINT fk_exam_papers_generation_settings
         FOREIGN KEY (generation_setting_id)
-            REFERENCES generation_settings (id) ON DELETE RESTRICT
+            REFERENCES table_generation_settings (id) ON DELETE RESTRICT
 );
 
 
-CREATE TABLE IF NOT EXISTS exam_paper_questions
+CREATE TABLE IF NOT EXISTS table_exam_paper_questions
 (
     exam_paper_id UUID NOT NULL,
     question_id   UUID NOT NULL,
 
-    PRIMARY KEY (exam_paper_id, question_id),
+    CONSTRAINT pk_exam_paper_questions PRIMARY KEY (exam_paper_id, question_id),
 
-    CONSTRAINT fk_exam_paper
+    CONSTRAINT fk_exam_paper_questions_paper
         FOREIGN KEY (exam_paper_id)
-            REFERENCES exam_papers (id)
+            REFERENCES table_exam_papers (id)
             ON DELETE RESTRICT,
 
-    CONSTRAINT fk_question
+    CONSTRAINT fk_exam_paper_questions_question
         FOREIGN KEY (question_id)
-            REFERENCES questions (id)
+            REFERENCES table_questions (id)
             ON DELETE RESTRICT
 );
